@@ -1,0 +1,25 @@
+# CMake build output
+/build/
+/cmake-build-*/
+CMakeUserPresets.json
+
+# Firmware build artifacts
+*.o
+*.obj
+*.elf
+*.hex
+*.bin
+*.map
+*.d
+
+# Local editor and OS files
+/.vs/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+
+# Local credentials
+.env
+.env.*
+!.env.example
