@@ -435,30 +435,29 @@ uint8_t MPU_Read_Multi_Byte(uint8_t addr, uint8_t length, uint8_t buff[])
     @return NULL
 */
 /**************************************************************************/
-void MPU_Get_Angles(float * roll,float * pitch)
+/* Return failure instead of interpreting an unread sample as a wrist gesture. */
+uint8_t MPU_Read_Angles(float *roll, float *pitch)
 {
-	short ax,ay,az;
-	MPU_Get_Accelerometer(&ax,&ay,&az);
-	*pitch = -atanf(ax/sqrtf(ay*ay+az*az));
-	*roll = atanf((float)ay/(float)az);
+    short ax, ay, az;
+    if (MPU_Get_Accelerometer(&ax, &ay, &az)) return 1;
+    float x = ax, y = ay, z = az;
+    if (x*x + y*y + z*z < 1.0f) return 1;
+    *pitch = atan2f(-x, sqrtf(y*y + z*z));
+    *roll = atan2f(y, z);
+    return 0;
 }
 
+void MPU_Get_Angles(float *roll, float *pitch)
+{
+    if (MPU_Read_Angles(roll, pitch)) {
+        *roll = 3.14159265f;
+        *pitch = 3.14159265f;
+    }
+}
 
-/**************************************************************************/
-/*
-    @brief  check the MPU6050 is horizontal or not
-
-    @param  NULL
-
-    @return 1 if is horizontal
-*/
-/**************************************************************************/
 uint8_t MPU_isHorizontal(void)
 {
-	float roll,pitch;
-	MPU_Get_Angles(&roll,&pitch);
-	if(roll<=0.50 && roll>=-0.50 && pitch<=0.50 && pitch>=-0.50)
-	{return 1;}
-	return 0;
+    float roll, pitch;
+    if (MPU_Read_Angles(&roll, &pitch)) return 0;
+    return fabsf(roll) <= 0.60f && fabsf(pitch) <= 0.60f;
 }
-

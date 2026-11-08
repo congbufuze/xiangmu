@@ -115,6 +115,7 @@ u8 MPU_Get_Gyroscope(short *gx,short *gy,short *gz);
 u8 MPU_Get_Accelerometer(short *ax,short *ay,short *az);
 void MPU_Get_Angles(float * roll,float * pitch);
 uint8_t MPU_isHorizontal(void);
+uint8_t MPU_Read_Angles(float *roll, float *pitch);
 
 #endif
 

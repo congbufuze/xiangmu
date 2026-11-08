@@ -27,6 +27,11 @@ typedef struct {
     uint32_t save_failures;
     uint32_t saves;
     uint32_t fault;
+    uint32_t aht_read_failures;
+    uint32_t imu_read_failures;
+    uint32_t wrist_wake_count;
+    uint8_t aht_init_status;
+    uint8_t imu_init_status;
     const char *fault_task;
     bool settings_loaded;
     ScreenState screen_state;

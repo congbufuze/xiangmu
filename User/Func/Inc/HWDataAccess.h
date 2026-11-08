@@ -39,8 +39,8 @@ extern "C" {
   #define HW_USE_BLE    0
   #define HW_USE_BAT    0
   #define HW_USE_LCD    1
-  #define HW_USE_IMU    0
-  #define HW_USE_AHT21  0
+  #define HW_USE_IMU    1
+  #define HW_USE_AHT21  1
   #define HW_USE_SPL06  0
   #define HW_USE_LSM303 0
   #define HW_USE_EM7028 0

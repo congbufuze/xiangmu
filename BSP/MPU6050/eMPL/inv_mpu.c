@@ -2959,11 +2959,11 @@ u8 mpu_dmp_init(void)
 	MPU_Bus_Init();
 	if(mpu_init()==0)//初始化MPU6050
 	{	
-		res = mpu_lp_accel_mode(20);
+		res = mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL);
 		if(res)return -1; 
 		//res=mpu_set_sensors(INV_XYZ_ACCEL);//设置所需要的传感器
 		//if(res)return 1; 
-		res=mpu_configure_fifo(INV_XYZ_ACCEL);//设置FIFO
+		res=mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL);//设置FIFO
 		if(res)return 2; 
 		res=mpu_set_sample_rate(DEFAULT_MPU_HZ);	//设置采样率
 		if(res)return 3; 

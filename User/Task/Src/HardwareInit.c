@@ -69,6 +69,9 @@ void StartHardwareInitTask(void *argument)
       HAL_IWDG_Refresh(&hiwdg);
     }
 
+    g_app_diagnostics.aht_init_status = HWInterface.AHT21.ConnectionError;
+    g_app_diagnostics.imu_init_status = HWInterface.IMU.ConnectionError;
+
     num = 3;
     while(num && HWInterface.Ecompass.ConnectionError)
     {
