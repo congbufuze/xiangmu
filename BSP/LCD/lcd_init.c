@@ -3,6 +3,8 @@
 #include "spi.h"
 #include "tim.h"
 
+static uint8_t lcd_light_percent = 50;
+
 /******************************************************************************
       函数说明：LCD端口初始化
       入口数据：无
@@ -16,6 +18,8 @@ void LCD_GPIO_Init(void)
  	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_GPIOD_CLK_ENABLE();
 	__HAL_RCC_GPIOA_CLK_ENABLE();
+
+	/* PA15 backlight is driven by TIM2_CH1, configured before LCD_Init. */
 
 	GPIO_InitStructure.Pin = RES_PIN;
  	GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP; 		 //推挽输出
@@ -136,7 +140,11 @@ void LCD_Address_Set(u16 x1,u16 y1,u16 x2,u16 y2)
 void LCD_Set_Light(uint8_t dc)
 {
 	if(dc>=5 && dc<=100)
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_1,dc*PWM_PERIOD/100);
+	{
+		lcd_light_percent = dc;
+		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1,
+			((__HAL_TIM_GET_AUTORELOAD(&htim2) + 1U) * dc) / 100U);
+	}
 }
 
 
@@ -147,8 +155,8 @@ void LCD_Set_Light(uint8_t dc)
 ******************************************************************************/
 void LCD_Close_Light(void)
 {
-	__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_1,0);
-	//HAL_TIM_PWM_Stop(&htim3,TIM_CHANNEL_3);
+	__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 0);
+	//HAL_TIM_PWM_Stop(&htim2,TIM_CHANNEL_1);
 }
 
 
@@ -159,7 +167,8 @@ void LCD_Close_Light(void)
 ******************************************************************************/
 void LCD_Open_Light(void)
 {
-	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_1);
+	LCD_Set_Light(lcd_light_percent);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 }
 
 /******************************************************************************

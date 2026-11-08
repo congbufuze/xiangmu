@@ -56,8 +56,18 @@ ENTRY(Reset_Handler)
 MEMORY
 {
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 512K
+FLASH_VECTOR (rx) : ORIGIN = 0x08000000, LENGTH = 16K
+SETTINGS_A (r)    : ORIGIN = 0x08004000, LENGTH = 16K
+SETTINGS_B (r)    : ORIGIN = 0x08008000, LENGTH = 16K
+FLASH (rx)       : ORIGIN = 0x0800C000, LENGTH = 464K
 }
+
+/* Referenced by SettingsFlash.c: regeneration of an unpartitioned linker
+ * script must fail the link rather than allow writes over firmware. */
+__settings_a_start__ = ORIGIN(SETTINGS_A);
+__settings_b_start__ = ORIGIN(SETTINGS_B);
+ASSERT(LENGTH(SETTINGS_A) == 16384, "Settings bank A size mismatch")
+ASSERT(LENGTH(SETTINGS_B) == 16384, "Settings bank B size mismatch")
 
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of RAM */
@@ -74,7 +84,7 @@ SECTIONS
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
-  } >FLASH
+  } >FLASH_VECTOR
 
   /* The program code and other data goes into FLASH */
   .text :

@@ -113,13 +113,44 @@ void CST816_RESET(void)
 void CST816_Get_XY_AXIS(void)
 {
 	uint8_t DAT[4];
-	IIC_Read_Multi_Byte(&CST816_dev,Device_Addr,XposH,4,DAT);
+	if (IIC_Read_Multi_Byte(&CST816_dev, Device_Addr, XposH, 4, DAT) != 0U) {
+		return;
+	}
 	CST816_Instance.X_Pos=((DAT[0]&0x0F)<<8)|DAT[1];//(temp[0]&0X0F)<<4|
-	CST816_Instance.Y_Pos=((DAT[2]&0x0F)<<8)|DAT[3] + TOUCH_OFFSET_Y;//(temp[2]&0X0F)<<4|
+	CST816_Instance.Y_Pos=(((DAT[2]&0x0F)<<8)|DAT[3]) + TOUCH_OFFSET_Y;//(temp[2]&0X0F)<<4|
 	#if REVERSE
 		CST816_Instance.X_Pos = 239 - CST816_Instance.X_Pos;
 		CST816_Instance.Y_Pos = 279 - CST816_Instance.Y_Pos;
 	#endif
+}
+
+/* Read finger count and coordinates from the same controller sample. */
+uint8_t CST816_ReadTouch(uint8_t *fingers, uint16_t *x, uint16_t *y)
+{
+    uint8_t sample[5];
+    if (fingers == NULL || x == NULL || y == NULL ||
+        IIC_Read_Multi_Byte(&CST816_dev, Device_Addr, FingerNum,
+                           sizeof(sample), sample) != 0U) {
+        return 1U;
+    }
+    *fingers = sample[0] & 0x0FU;
+    if (*fingers == 0U) {
+        return 0U;
+    }
+    uint16_t raw_x = ((uint16_t)(sample[1] & 0x0FU) << 8) | sample[2];
+    uint16_t raw_y = ((uint16_t)(sample[3] & 0x0FU) << 8) | sample[4];
+    if (*fingers != 1U || raw_x >= 240U || raw_y >= 280U) {
+        return 1U;
+    }
+#if REVERSE
+    raw_x = 239U - raw_x;
+    raw_y = 279U - raw_y;
+#endif
+    *x = raw_x;
+    *y = raw_y;
+    CST816_Instance.X_Pos = raw_x;
+    CST816_Instance.Y_Pos = raw_y;
+    return 0U;
 }
 
 

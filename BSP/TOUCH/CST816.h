@@ -92,6 +92,7 @@ void CST816_Init(void);
 
 /* 触摸屏操作函数 */
 void CST816_Get_XY_AXIS(void);
+uint8_t CST816_ReadTouch(uint8_t *fingers, uint16_t *x, uint16_t *y);
 uint8_t CST816_Get_ChipID(void);
 uint8_t CST816_Get_FingerNum(void);
 /* 触摸屏读写函数 */

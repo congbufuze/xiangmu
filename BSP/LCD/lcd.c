@@ -3,7 +3,7 @@
 #include "lcdfont.h"
 #include "delay.h"
 #include "spi.h"
-#include "cmsis_os.h"
+#include "main.h"
 
 #if USE_HORIZONTAL == 0 || USE_HORIZONTAL == 1
 	#define OFFSET_Y 20
@@ -43,35 +43,41 @@ void LCD_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color)
 ******************************************************************************/
 void LCD_Color_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 *color_p)
 {
-	u16 i,j,width,height;
-	width = xend-xsta+1;
-	height = yend-ysta+1;
-	uint32_t pixel_count = width * height;
-	uint32_t byte_count = pixel_count * 2U;
+    if (color_p != NULL && xend >= xsta && yend >= ysta)
+    {
+        const uint32_t pixel_count = ((uint32_t)xend - xsta + 1U) *
+                                     ((uint32_t)yend - ysta + 1U);
+        LCD_Address_Set(xsta, ysta + OFFSET_Y, xend, yend + OFFSET_Y);
 
-	LCD_Address_Set(xsta,ysta+OFFSET_Y,xend,yend+OFFSET_Y);
-
-	HAL_SPI_Transmit_DMA(&hspi1,(uint8_t*)color_p,byte_count);
+        /* Convert the writable LVGL stripe in place, then transmit it in one
+         * burst instead of making a HAL call for every 64 pixels. */
+        for (uint32_t i = 0U; i < pixel_count; ++i) {
+            color_p[i] = (uint16_t)__REV16(color_p[i]);
+        }
+        uint32_t remaining = pixel_count * 2U;
+        uint8_t *bytes = (uint8_t *)color_p;
+        while (remaining != 0U) {
+            const uint16_t chunk = remaining > 65534U ? 65534U : (uint16_t)remaining;
+            if (HAL_SPI_Transmit(&hspi1, bytes, chunk, 100U) != HAL_OK) {
+                break;
+            }
+            bytes += chunk;
+            remaining -= chunk;
+        }
+        /* Preserve the caller's RGB565 data before releasing the buffer. */
+        for (uint32_t i = 0U; i < pixel_count; ++i) {
+            color_p[i] = (uint16_t)__REV16(color_p[i]);
+        }
+    }
+    if (lcd_ready_cb != NULL) {
+        lcd_ready_cb();
+    }
 }
 
 // 设置通知的回调函数
 void LCD_Set_Flush_Complete_Callback(LCD_CallbackFunc_t cb)
 {
 	lcd_ready_cb = cb;
-}
-
-// DMA 传输完成中断回调
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	if (hspi->Instance == SPI1)
-	{
-		// 确保最后一位数据离开 STM32 的移位寄存器
-		while (hspi->Instance->SR & SPI_FLAG_BSY);
-		if (lcd_ready_cb)
-		{
-			lcd_ready_cb();
-		}
-	}
 }
 
 /******************************************************************************
