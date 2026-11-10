@@ -26,9 +26,6 @@ extern lv_obj_t * ui_TempNumLabel;
 extern lv_obj_t * ui_HumiiconLabel;
 extern lv_obj_t * ui_HumiArc;
 extern lv_obj_t * ui_HumiNumLabel;
-extern lv_obj_t * ui_HRiconLabel;
-extern lv_obj_t * ui_HRSpinner;
-extern lv_obj_t * ui_HRNumLabel;
 
 extern lv_obj_t * ui_DropDownPanel;
 extern lv_obj_t * ui_UpBGPanel;

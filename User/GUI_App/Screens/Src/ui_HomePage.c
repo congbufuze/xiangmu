@@ -1,9 +1,7 @@
 #include "AppServices.h"
 #include "../../ui.h"
-#include "../../ui_helpers.h"
 #include "../Inc/ui_HomePage.h"
 #include "../Inc/ui_MenuPage.h"
-#include "../Inc/ui_HRPage.h"
 #include "../Inc/ui_SetPage.h"
 
 #include "../../../Func/Inc/HWDataAccess.h"
@@ -30,9 +28,6 @@ lv_obj_t * ui_TempNumLabel;
 lv_obj_t * ui_HumiiconLabel;
 lv_obj_t * ui_HumiArc;
 lv_obj_t * ui_HumiNumLabel;
-lv_obj_t * ui_HRArc;
-lv_obj_t * ui_HRiconLabel;
-lv_obj_t * ui_HRNumLabel;
 //drop down
 lv_obj_t * ui_DropDownPanel;
 lv_obj_t * ui_UpBGPanel;
@@ -500,49 +495,6 @@ void ui_HomePage_screen_init(void)
     lv_obj_set_align(ui_HumiNumLabel, LV_ALIGN_CENTER);
     sprintf(value_strbuf,"%d",ui_HomePageHumiValue);
     lv_label_set_text(ui_HumiNumLabel, value_strbuf);
-
-		ui_HRArc = lv_arc_create(ui_HomePage);
-    lv_obj_set_width(ui_HRArc, 50);
-    lv_obj_set_height(ui_HRArc, 50);
-    lv_obj_set_x(ui_HRArc, 70);
-    lv_obj_set_y(ui_HRArc, 90);
-    lv_obj_set_align(ui_HRArc, LV_ALIGN_CENTER);
-    lv_obj_remove_flag(ui_HRArc, LV_OBJ_FLAG_CLICKABLE);      /// Flags
-    lv_arc_set_value(ui_HRArc, 100);
-    lv_arc_set_bg_angles(ui_HRArc, 270, 620);
-    lv_obj_set_style_arc_width(ui_HRArc, 5, LV_PART_MAIN);
-
-    lv_obj_set_style_arc_color(ui_HRArc, lv_color_hex(0xE11432), LV_PART_INDICATOR);
-    lv_obj_set_style_arc_opa(ui_HRArc, 255, LV_PART_INDICATOR);
-    lv_obj_set_style_arc_width(ui_HRArc, 5, LV_PART_INDICATOR);
-
-    lv_obj_set_style_bg_color(ui_HRArc, lv_color_hex(0xE11432), LV_PART_KNOB);
-    lv_obj_set_style_bg_opa(ui_HRArc, 255, LV_PART_KNOB);
-    lv_obj_set_style_pad_left(ui_HRArc, 0, LV_PART_KNOB);
-    lv_obj_set_style_pad_right(ui_HRArc, 0, LV_PART_KNOB);
-    lv_obj_set_style_pad_top(ui_HRArc, 0, LV_PART_KNOB);
-    lv_obj_set_style_pad_bottom(ui_HRArc, 0, LV_PART_KNOB);
-
-    ui_HRiconLabel = lv_label_create(ui_HomePage);
-    lv_obj_set_width(ui_HRiconLabel, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_HRiconLabel, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_HRiconLabel, 70);
-    lv_obj_set_y(ui_HRiconLabel, 90);
-    lv_obj_set_align(ui_HRiconLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_HRiconLabel, "");
-    lv_obj_set_style_text_color(ui_HRiconLabel, lv_color_hex(0xE11432), LV_PART_MAIN);
-    lv_obj_set_style_text_opa(ui_HRiconLabel, 255, LV_PART_MAIN);
-    lv_obj_set_style_text_font(ui_HRiconLabel, &ui_font_iconfont32, LV_PART_MAIN);
-
-    ui_HRNumLabel = lv_label_create(ui_HomePage);
-    lv_obj_set_width(ui_HRNumLabel, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_HRNumLabel, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_HRNumLabel, 70);
-    lv_obj_set_y(ui_HRNumLabel, 125);
-    lv_obj_set_align(ui_HRNumLabel, LV_ALIGN_CENTER);
-    sprintf(value_strbuf,"%d", HWInterface.HR_meter.HrRate);
-    lv_label_set_text(ui_HRNumLabel, value_strbuf);
-
 
     ui_DropDownPanel = lv_obj_create(ui_HomePage);
     lv_obj_set_width(ui_DropDownPanel, 240);

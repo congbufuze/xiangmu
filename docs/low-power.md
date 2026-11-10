@@ -83,6 +83,6 @@ python scripts/verify_firmware.py
 6. 调试观察 `runtime_tick_active=true`，`tickless_entries/exits` 持续增长；按键和触摸分别增长 `key_irq_count/touch_irq_count`。运行时 TIM11 的 CEN/UIE 应为零，TIM2 在息屏时 CEN 为零。
 7. 息屏后约 5 秒观察一次 `environment_samples` 增长；`lcd_sleep_count/lcd_wake_count` 与休眠/唤醒次数相符。断点暂停 CPU 会影响时间观测，尽量用运行期内存刷新。
 
-PB9 是这轮新增使用的触摸中断输入，需要硬件上已连通 CST816 的 INT。若按键与抬腕都能唤醒但触摸不能，先看 `touch_irq_count`：不增长表示中断链路尚未成立；此时 UI 息屏后已不再通过 I2C 轮询触摸。此路径尚未由本轮实物反馈确认。
+PB9 是这轮新增使用的触摸中断输入，需要硬件上已连通 CST816 的 INT。若按键与抬腕都能唤醒但触摸不能，先看 `touch_irq_count`：不增长表示中断链路尚未成立；此时 UI 息屏后已不再通过 I2C 轮询触摸。2026-11-10 用户已实物确认触摸、按键、抬腕均能唤醒；后续 UI 精简版本仍需复测，见 `flash-optimization.md`。
 
 本轮不输出电流和续航收益；完成硬件稳定性验收后，再在一致供电、调试连接条件下测亮屏、变暗、息屏 Sleep 的电流。比较数值时记录供电电压、传感器模式和是否连接下载器。

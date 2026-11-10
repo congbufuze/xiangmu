@@ -97,7 +97,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 # GUI application sources
-file(GLOB_RECURSE GUI_SOURCES
+file(GLOB_RECURSE GUI_SOURCES CONFIGURE_DEPENDS
     User/GUI_App/*.c
     User/GUI_App/Screens/Src/*.c
     User/GUI_App/Fonts/*.c

@@ -1230,13 +1230,13 @@
 #define LV_USE_3DTEXTURE 0
 
 /** Animated image */
-#define LV_USE_ANIMIMG 1
+#define LV_USE_ANIMIMG 0
 
 /** Arc */
 #define LV_USE_ARC 1
 
 /** Arc label */
-#define LV_USE_ARCLABEL 1
+#define LV_USE_ARCLABEL 0
 
 /** Bar */
 #define LV_USE_BAR 1
@@ -1321,7 +1321,7 @@
 #define LV_USE_CALENDAR_HEADER_ARROW 1
 
 /** Header with dropdowns */
-#define LV_USE_CALENDAR_HEADER_DROPDOWN 1
+#define LV_USE_CALENDAR_HEADER_DROPDOWN 0
 
 /** Chinese calendar */
 #define LV_USE_CALENDAR_CHINESE 0
@@ -1332,19 +1332,19 @@
  *
  *  Enable: LV_USE_IMAGE
  */
-#define LV_USE_CANVAS 1
+#define LV_USE_CANVAS 0
 
 /** Chart */
-#define LV_USE_CHART 1
+#define LV_USE_CHART 0
 
 /** Checkbox */
-#define LV_USE_CHECKBOX 1
+#define LV_USE_CHECKBOX 0
 
 /** Dropdown
  *
  *  Enable: LV_USE_LABEL
  */
-#define LV_USE_DROPDOWN 1
+#define LV_USE_DROPDOWN 0
 
 /** Decodes images and plays videos with FFmpeg. It supports all major image
  *  formats, so do not enable other image decoders together with it.
@@ -1393,10 +1393,10 @@
 #define LV_USE_GSTREAMER 0
 
 /** Image */
-#define LV_USE_IMAGE 1
+#define LV_USE_IMAGE 0
 
 /** Image button */
-#define LV_USE_IMAGEBUTTON 1
+#define LV_USE_IMAGEBUTTON 0
 
 /** Chinese input method that converts Pinyin typed on a keyboard widget
  *  into Chinese characters.
@@ -1426,7 +1426,7 @@
 #endif /*LV_USE_IME_PINYIN*/
 
 /** Keyboard */
-#define LV_USE_KEYBOARD 1
+#define LV_USE_KEYBOARD 0
 
 /** Label */
 #define LV_USE_LABEL 1
@@ -1446,13 +1446,13 @@
 #endif /*LV_USE_LABEL*/
 
 /** LED */
-#define LV_USE_LED 1
+#define LV_USE_LED 0
 
 /** Line */
-#define LV_USE_LINE 1
+#define LV_USE_LINE 0
 
 /** List */
-#define LV_USE_LIST 1
+#define LV_USE_LIST 0
 
 #if LV_USE_THORVG
 /** Plays Lottie JSON animations using the ThorVG Lottie parser.
@@ -1464,13 +1464,13 @@
 #endif /*LV_USE_THORVG*/
 
 /** Menu */
-#define LV_USE_MENU 1
+#define LV_USE_MENU 0
 
 /** Message box
  *
  *  Enable: LV_USE_LABEL
  */
-#define LV_USE_MSGBOX 1
+#define LV_USE_MSGBOX 0
 
 /** QR code
  *
@@ -1488,7 +1488,7 @@
 #define LV_USE_ROLLER 1
 
 /** Scale */
-#define LV_USE_SCALE 1
+#define LV_USE_SCALE 0
 
 /** Slider
  *
@@ -1497,7 +1497,7 @@
 #define LV_USE_SLIDER 1
 
 /** Span */
-#define LV_USE_SPAN 1
+#define LV_USE_SPAN 0
 
 #if LV_USE_SPAN
 /** Maximum number of span descriptors */
@@ -1506,10 +1506,10 @@
 #endif /*LV_USE_SPAN*/
 
 /** Spinbox */
-#define LV_USE_SPINBOX 1
+#define LV_USE_SPINBOX 0
 
 /** Spinner */
-#define LV_USE_SPINNER 1
+#define LV_USE_SPINNER 0
 
 /** Switch */
 #define LV_USE_SWITCH 1
@@ -1527,16 +1527,16 @@
 #endif /*LV_USE_TEXTAREA*/
 
 /** Table */
-#define LV_USE_TABLE 1
+#define LV_USE_TABLE 0
 
 /** Tabview */
-#define LV_USE_TABVIEW 1
+#define LV_USE_TABVIEW 0
 
 /** Tileview */
-#define LV_USE_TILEVIEW 1
+#define LV_USE_TILEVIEW 0
 
 /** Window */
-#define LV_USE_WIN 1
+#define LV_USE_WIN 0
 
 
 
