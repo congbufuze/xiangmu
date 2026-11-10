@@ -30,6 +30,15 @@ typedef struct {
     uint32_t aht_read_failures;
     uint32_t imu_read_failures;
     uint32_t wrist_wake_count;
+    uint32_t tickless_entries;
+    uint32_t tickless_exits;
+    uint32_t tickless_last_programmed_ticks;
+    uint32_t key_irq_count;
+    uint32_t touch_irq_count;
+    uint32_t environment_samples;
+    uint32_t lcd_sleep_count;
+    uint32_t lcd_wake_count;
+    bool runtime_tick_active;
     uint8_t aht_init_status;
     uint8_t imu_init_status;
     const char *fault_task;

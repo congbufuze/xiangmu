@@ -64,6 +64,7 @@
 #define configSUPPORT_DYNAMIC_ALLOCATION         1
 #define configUSE_IDLE_HOOK                      0
 #define configUSE_TICK_HOOK                      0
+#define configUSE_TICKLESS_IDLE                  1
 #define configCPU_CLOCK_HZ                       ( SystemCoreClock )
 #define configTICK_RATE_HZ                       ((TickType_t)1000)
 #define configMAX_PRIORITIES                     ( 56 )
@@ -165,9 +166,19 @@ standard names. */
 #define USE_CUSTOM_SYSTICK_HANDLER_IMPLEMENTATION 0
 
 /* USER CODE BEGIN Defines */
+/* The CMSIS wrapper reads SysTick CTRL before calling the port, clearing
+ * COUNTFLAG needed by this kernel version's tickless elapsed-time path. */
+#undef USE_CUSTOM_SYSTICK_HANDLER_IMPLEMENTATION
+#define USE_CUSTOM_SYSTICK_HANDLER_IMPLEMENTATION 1
 #define configCHECK_FOR_STACK_OVERFLOW 2
 #define configUSE_MALLOC_FAILED_HOOK 1
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
 /* USER CODE END Defines */
+
+void PreSleepProcessing(uint32_t expected_ticks);
+void PostSleepProcessing(uint32_t expected_ticks);
+/* Match CubeMX's built-in tickless template: the pre-hook executes WFI. */
+#define configPRE_SLEEP_PROCESSING(x) do { (x) = 0; PreSleepProcessing(x); } while (0)
+#define configPOST_SLEEP_PROCESSING PostSleepProcessing
 
 #endif /* FREERTOS_CONFIG_H */

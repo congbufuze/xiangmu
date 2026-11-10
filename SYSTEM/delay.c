@@ -1,5 +1,6 @@
 #include "delay.h"
 #include "sys.h"
+#include "cmsis_os2.h"
  
 /* 
 //roughly delay
@@ -84,7 +85,13 @@ void delay_us(u32 nus)
 
 void delay_ms(u16 nms)
 {
-	u32 i;
-	for(i=0;i<nms;i++) delay_us(1000);
+    /* Millisecond device waits must release the CPU to FreeRTOS's idle task.
+     * Bit-banged I2C still uses delay_us for its individual signal edges. */
+    if (nms && __get_IPSR() == 0U && osKernelGetState() == osKernelRunning) {
+        uint32_t ticks = ((uint32_t)nms * osKernelGetTickFreq() + 999U) / 1000U;
+        (void)osDelay(ticks);
+        return;
+    }
+    for (u32 i = 0; i < nms; ++i) delay_us(1000);
 }
 #endif

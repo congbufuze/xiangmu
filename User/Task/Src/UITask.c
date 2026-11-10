@@ -1,4 +1,6 @@
 #include "AppServices.h"
+#include "AppPower.h"
+#include "lcd_init.h"
 #include "SystemStartup.h"
 #include "HWDataAccess.h"
 #include "main.h"
@@ -51,8 +53,16 @@ void StartUITask(void *argument)
     ScreenPower power;
     ScreenPower_Init(&power, HAL_GetTick());
     uint8_t applied_light = 255;
+    uint32_t wait_ticks = 1U;
     for (;;) {
+        uint32_t flags = osThreadFlagsWait(APP_UI_NOTIFY | APP_UI_TOUCH_IRQ,
+                                           osFlagsWaitAny, wait_ticks);
         uint32_t events = App_TakeEvents();
+        if (!(flags & osFlagsError) && (flags & APP_UI_TOUCH_IRQ)) {
+            bool sleeping = power.state == SCREEN_SLEEPING;
+            lv_port_indev_notify_touch(sleeping);
+            if (sleeping) events |= APP_EVENT_WAKE_REQUEST;
+        }
         if (events & APP_EVENT_SETTINGS) {
             AppSettings_Read(&settings);
             sync_settings(&settings);
@@ -81,19 +91,33 @@ void StartUITask(void *argument)
             if (power.state == SCREEN_SLEEPING) {
                 lv_display_enable_invalidation(lv_display_get_default(), false);
                 lv_timer_pause(refresh);
+                HWInterface.LCD.SetLight(0);
+                applied_light = 0;
+                LCD_ST7789_SleepIn();
+                ++g_app_diagnostics.lcd_sleep_count;
             }
             else if (previous == SCREEN_SLEEPING) {
+                LCD_ST7789_SleepOut();
+                ++g_app_diagnostics.lcd_wake_count;
+                sync_sensors();
+                lv_port_indev_notify_touch(true);
                 lv_display_enable_invalidation(lv_display_get_default(), true);
                 lv_timer_resume(refresh);
                 lv_obj_invalidate(lv_screen_active());
                 lv_timer_ready(refresh);
             }
         }
+        if (power.state == SCREEN_SLEEPING) {
+            /* Pause all LVGL processing, not just drawing. Only an input,
+             * settings or explicit power event needs to wake the UI task. */
+            wait_ticks = osWaitForever;
+            continue;
+        }
+        uint32_t delay = lv_timer_handler();
         uint8_t light = power.state == SCREEN_SLEEPING ? 0 :
             power.state == SCREEN_DIMMED ? (settings.brightness > 10 ? 10 : settings.brightness) : settings.brightness;
         if (light != applied_light) { HWInterface.LCD.SetLight(light); applied_light = light; }
-        uint32_t delay = lv_timer_handler();
         if (delay > 10) delay = 10;
-        osDelay(App_MsToTicks(delay ? delay : 1));
+        wait_ticks = App_MsToTicks(delay ? delay : 1);
     }
 }

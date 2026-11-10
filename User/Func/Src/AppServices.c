@@ -1,4 +1,5 @@
 #include "AppServices.h"
+#include "AppPower.h"
 #include "SettingsFlash.h"
 #include "HWDataAccess.h"
 #include "main.h"
@@ -37,6 +38,7 @@ void AppServices_Init(void)
 void App_PostEvent(uint32_t events)
 {
     if (osEventFlagsSet(AppEventHandle, events) & osFlagsError) Error_Handler();
+    AppPower_NotifyUI();
 }
 
 uint32_t App_TakeEvents(void)
@@ -88,7 +90,8 @@ void AppSensors_Publish(const AppSensorSnapshot *snapshot)
     if (osMutexAcquire(SensorMutexHandle, osWaitForever) != osOK) Error_Handler();
     s_sensors = *snapshot;
     if (osMutexRelease(SensorMutexHandle) != osOK) Error_Handler();
-    App_PostEvent(APP_EVENT_SENSOR_UPDATED);
+    /* The UI reads the latest snapshot unconditionally on wake. */
+    if (!AppScreen_IsSleeping()) App_PostEvent(APP_EVENT_SENSOR_UPDATED);
 }
 
 void AppSensors_Read(AppSensorSnapshot *snapshot)

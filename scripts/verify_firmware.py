@@ -35,6 +35,14 @@ for task in ioc["FREERTOS.Tasks01"].split(";"):
 config = (root / "Core/Inc/FreeRTOSConfig.h").read_text()
 assert re.search(r"configTOTAL_HEAP_SIZE\s+\(\(size_t\)" + ioc["FREERTOS.TOTAL_HEAP_SIZE"] + r"\)", config)
 assert ioc["FREERTOS.Queues01"].startswith("KEYQueue,8,uint8_t,")
+assert ioc["FREERTOS.configUSE_TICKLESS_IDLE"] == "1"
+assert re.search(r"#define configUSE_TICKLESS_IDLE\s+1", config)
+assert ioc["PA0-WKUP.Signal"] == "GPXTI0"
+assert ioc["PA0-WKUP.GPIO_ModeDefaultEXTI"] == "GPIO_MODE_IT_RISING_FALLING"
+assert ioc["PB9.Signal"] == "GPXTI9"
+assert ioc["PB9.GPIO_ModeDefaultEXTI"] == "GPIO_MODE_IT_FALLING"
+for irq in ("EXTI0_IRQn", "EXTI9_5_IRQn"):
+    assert ioc["NVIC." + irq].startswith(r"true\:5\:"), irq
 assert ";" not in ioc["FREERTOS.Queues01"]
 assert "LV_USE_OS LV_OS_NONE" in (root / "Middlewares/GUI/lv_conf.h").read_text()
 for old in ("Id_MessageQueue", "IdleBreak_MessageQueue", "Stop_MessageQueue", "HomeUpdateQueue"):

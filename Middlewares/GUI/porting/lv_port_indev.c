@@ -8,6 +8,12 @@ extern CST816_Info CST816_Instance;
 static lv_indev_t * s_touchpad;
 static bool suppress_until_release;
 
+void lv_port_indev_notify_touch(bool waking)
+{
+    if (waking) suppress_until_release = true;
+    if (s_touchpad) lv_timer_ready(lv_indev_get_read_timer(s_touchpad));
+}
+
 static void touchpad_read(lv_indev_t * indev, lv_indev_data_t * data)
 {
     (void)indev;

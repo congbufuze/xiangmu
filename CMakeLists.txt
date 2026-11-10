@@ -74,6 +74,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Func/Src/AppTypes.c
     User/Func/Src/ScreenPower.c
     User/Func/Src/AppServices.c
+    User/Func/Src/AppPower.c
     User/Func/Src/SettingsJournal.c
     User/Func/Src/SettingsFlash.c
     User/Func/Src/HWDataAccess.c

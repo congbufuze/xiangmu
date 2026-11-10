@@ -178,8 +178,10 @@ void LCD_Open_Light(void)
 ******************************************************************************/
 void LCD_ST7789_SleepIn(void)
 {
+	LCD_WR_REG(0x28);
 	LCD_WR_REG(0x10);
-	delay_ms(100);
+	delay_ms(120);
+	CLEAR_BIT(htim2.Instance->CR1, TIM_CR1_CEN);
 }
 
 
@@ -190,8 +192,10 @@ void LCD_ST7789_SleepIn(void)
 ******************************************************************************/
 void LCD_ST7789_SleepOut(void)
 {
+	SET_BIT(htim2.Instance->CR1, TIM_CR1_CEN);
 	LCD_WR_REG(0x11);
-	delay_ms(100);
+	delay_ms(120);
+	LCD_WR_REG(0x29);
 }
 
 

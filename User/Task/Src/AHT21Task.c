@@ -3,6 +3,7 @@
 #include "HWDataAccess.h"
 #include "main.h"
 #include "WristWake.h"
+#include "LowPowerPolicy.h"
 #if HW_USE_IMU
 #include "mpu6050.h"
 #endif
@@ -15,7 +16,8 @@ void StartAHT21Task(void *argument)
 #if HW_USE_IMU
     WristWake wrist = {0};
 #endif
-    uint32_t last_sample = HAL_GetTick() - 500U;
+    uint32_t last_sample = HAL_GetTick() - APP_ENV_ACTIVE_MS;
+    bool was_sleeping = false;
     for (;;) {
 #if HW_USE_IMU
         AppSettings settings;
@@ -41,8 +43,11 @@ void StartAHT21Task(void *argument)
         }
 #endif
         uint32_t now = HAL_GetTick();
-        if ((uint32_t)(now - last_sample) >= 500U) {
+        bool sleeping = AppScreen_IsSleeping();
+        if ((!sleeping && was_sleeping) ||
+            (uint32_t)(now - last_sample) >= AppEnv_IntervalMs(sleeping)) {
             last_sample = now;
+            ++g_app_diagnostics.environment_samples;
 #if HW_USE_BAT
             snapshot.battery = HWInterface.Power.BatCalculate();
 #endif
@@ -70,6 +75,8 @@ void StartAHT21Task(void *argument)
             ++snapshot.sequence;
             AppSensors_Publish(&snapshot);
         }
-        osDelay(App_MsToTicks(100));
+        was_sleeping = sleeping;
+        /* Preserve wrist sampling and DMP FIFO service while asleep. */
+        osDelay(App_MsToTicks(APP_IMU_SERVICE_MS));
     }
 }

@@ -11,6 +11,7 @@
 #include "iwdg.h"
 #include "SystemStartup.h"
 #include "AppServices.h"
+#include "AppPower.h"
 
 // user
 #include "HWDataAccess.h"
@@ -103,6 +104,8 @@ void StartHardwareInitTask(void *argument)
     // touch
     CST816_GPIO_Init();
     CST816_RESET();
+    CST816_Config_AutoSleepTime(5);
+    CST816_IIC_WriteREG(IrqCtl, EnTouch | EnChange);
 
     // lcd
     MX_TIM2_Init();
@@ -123,6 +126,7 @@ void StartHardwareInitTask(void *argument)
 
 
     /* UITask owns LCD/LVGL after READY. */
+    AppPower_StartRuntimeClock();
 
     if ((osEventFlagsSet(SystemStartupEventHandle, SYSTEM_STARTUP_READY_FLAG) & osFlagsError) != 0U) {
       Error_Handler();

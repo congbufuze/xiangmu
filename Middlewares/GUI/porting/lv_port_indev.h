@@ -31,6 +31,7 @@ extern "C" {
  * GLOBAL PROTOTYPES
  **********************/
 void lv_port_indev_init(void);
+void lv_port_indev_notify_touch(bool waking);
 
 /**********************
  *      MACROS
