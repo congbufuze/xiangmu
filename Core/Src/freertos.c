@@ -221,6 +221,7 @@ void StartDefaultTask(void *argument)
     if (HAL_IWDG_Refresh(&hiwdg) != HAL_OK) {
       Error_Handler();
     }
+    ++g_app_diagnostics.watchdog_refresh_count;
     AppDiagnostics_Update();
     osDelay(App_MsToTicks(1000));
   }

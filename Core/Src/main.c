@@ -27,6 +27,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "AppServices.h"
 
 /* USER CODE END Includes */
 
@@ -71,7 +72,9 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  /* Snapshot each boot, then clear flags so the next reset is unambiguous. */
+  g_app_diagnostics.reset_flags = RCC->CSR;
+  __HAL_RCC_CLEAR_RESET_FLAGS();
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/

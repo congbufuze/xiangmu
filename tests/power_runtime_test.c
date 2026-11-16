@@ -6,14 +6,22 @@
 #include "task.h"
 #include "key.h"
 #include "CST816.h"
+#include "rtc.h"
 
 uint32_t SystemCoreClock = 100000000U;
 volatile uint32_t uwTick;
 TIM_HandleTypeDef htim11 = {.Instance = TIM11};
+RTC_HandleTypeDef hrtc;
 osThreadId_t KeyTaskHandle, UITaskHandle;
 volatile AppDiagnostics g_app_diagnostics;
 static uint32_t ticks, suspended, notifications, notified_flags;
 static osThreadId_t notified_task;
+void *memset(void *dst, int value, size_t size)
+{
+    unsigned char *p = dst;
+    for (size_t i = 0; i < size; ++i) p[i] = (unsigned char)value;
+    return dst;
+}
 TickType_t xTaskGetTickCount(void) { return ticks; }
 TickType_t xTaskGetTickCountFromISR(void) { return ticks; }
 BaseType_t xTaskGetSchedulerState(void) { return taskSCHEDULER_RUNNING; }
@@ -22,6 +30,17 @@ void HAL_SuspendTick(void) { ++suspended; CLEAR_BIT(TIM11->DIER, TIM_DIER_UIE); 
 void HAL_NVIC_ClearPendingIRQ(IRQn_Type irq) { (void)irq; }
 uint32_t osThreadFlagsSet(osThreadId_t task, uint32_t flags)
 { ++notifications; notified_task = task; notified_flags = flags; return flags; }
+bool AppScreen_IsSleeping(void) { return false; }
+HAL_StatusTypeDef HAL_RTC_GetTime(RTC_HandleTypeDef *rtc, RTC_TimeTypeDef *time, uint32_t format)
+{ (void)rtc; (void)format; *time = (RTC_TimeTypeDef){0}; return HAL_OK; }
+HAL_StatusTypeDef HAL_RTC_GetDate(RTC_HandleTypeDef *rtc, RTC_DateTypeDef *date, uint32_t format)
+{ (void)rtc; (void)format; *date = (RTC_DateTypeDef){0}; return HAL_OK; }
+HAL_StatusTypeDef HAL_RTCEx_SetWakeUpTimer_IT(RTC_HandleTypeDef *rtc, uint32_t count, uint32_t clock)
+{ (void)rtc; (void)count; (void)clock; return HAL_OK; }
+void HAL_PWR_EnterSTOPMode(uint32_t regulator, uint8_t entry)
+{ (void)regulator; (void)entry; }
+void SystemClock_Config(void) {}
+void Error_Handler(void) { for (;;) {} }
 
 volatile uint32_t tests_passed;
 #define CHECK(x) do { if (!(x)) return __LINE__; ++tests_passed; } while (0)

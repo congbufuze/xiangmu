@@ -178,7 +178,7 @@ standard names. */
 void PreSleepProcessing(uint32_t expected_ticks);
 void PostSleepProcessing(uint32_t expected_ticks);
 /* Match CubeMX's built-in tickless template: the pre-hook executes WFI. */
-#define configPRE_SLEEP_PROCESSING(x) do { (x) = 0; PreSleepProcessing(x); } while (0)
+#define configPRE_SLEEP_PROCESSING(x) do { PreSleepProcessing(x); (x) = 0; } while (0)
 #define configPOST_SLEEP_PROCESSING PostSleepProcessing
 
 #endif /* FREERTOS_CONFIG_H */

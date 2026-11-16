@@ -15,7 +15,7 @@ command = commands[0]['command']
 includes = [arg for arg in command.split() if arg.startswith('-I')]
 out = root / 'build/power_runtime_test.elf'
 subprocess.run([sys.argv[1], '-mcpu=cortex-m4', '-mthumb', '-mfpu=fpv4-sp-d16',
-    '-mfloat-abi=softfp', '-Os', '-g', '-std=c11', '-ffunction-sections', '-fdata-sections',
+    '-mfloat-abi=softfp', '-Os', '-g', '-std=c11', '-ffreestanding', '-ffunction-sections', '-fdata-sections',
     '-nostdlib', '-DSTM32F411xE', '-DUSE_HAL_DRIVER', *includes,
     'tests/power_runtime_test.c', 'User/Func/Src/AppPower.c',
     '-Ttests/core_logic.ld', '-Wl,--gc-sections', '-lgcc', '-o', str(out)], cwd=root, check=True)

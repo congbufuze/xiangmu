@@ -33,6 +33,11 @@ typedef struct {
     uint32_t tickless_entries;
     uint32_t tickless_exits;
     uint32_t tickless_last_programmed_ticks;
+    uint32_t stop_entries;
+    uint32_t stop_exits;
+    uint32_t stop_entry_aborts;
+    uint32_t stop_wake_exti_latched;
+    uint32_t reset_flags;
     uint32_t key_irq_count;
     uint32_t touch_irq_count;
     uint32_t environment_samples;
@@ -44,6 +49,11 @@ typedef struct {
     const char *fault_task;
     bool settings_loaded;
     ScreenState screen_state;
+    uint32_t stop_last_elapsed_ms;
+    uint32_t watchdog_refresh_count;
+    uint32_t stop_clock_failures;
+    uint32_t stop_clock_error;
+    uint32_t stop_clock_fallbacks;
 } AppDiagnostics;
 
 extern volatile AppDiagnostics g_app_diagnostics;
